@@ -1,0 +1,9 @@
+{
+  "sample_rate": 16000,
+  "window_seconds": 10,
+  "max_samples": 160000,
+  "n_mfcc": 13,
+  "n_mels": 64,
+  "feature_vector_size": 160,
+  "features": ["mfcc_mean", "mfcc_std", "mel_mean", "mel_std", "zcr_mean", "zcr_std", "spectral_centroid_mean", "spectral_centroid_std", "rms_mean", "rms_std"]
+}

@@ -7,6 +7,7 @@ Current files:
 - apnea_detection_results.png
 - prediction_examples.png
 - prediction_statistics.png
+- feature_config.json
 
 Next required artifact:
 - scaler file used during training (for example scaler.joblib), required for correct inference.

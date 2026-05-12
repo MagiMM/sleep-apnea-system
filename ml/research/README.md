@@ -9,3 +9,6 @@ Current notebook:
 
 Action item:
 - extract reusable preprocessing and feature-extraction steps from the notebook into backend code.
+
+Utility scripts:
+- export_scaler.py: downloads the dataset, extracts the same 160 features, and writes ml/artifacts/scaler.joblib
