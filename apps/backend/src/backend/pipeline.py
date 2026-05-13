@@ -104,3 +104,23 @@ class ApneaInferencePipeline:
         confidence = proba if apnea else 1.0 - proba
 
         return InferenceResult(label=label, confidence=confidence, apnea_probability=proba)
+
+        def predict_from_features(self, feature_vector: np.ndarray) -> InferenceResult:
+            """Predict from pre-extracted features (e.g., from .npy file)."""
+            # Ensure correct shape
+            if feature_vector.ndim == 1:
+                feature_vector = feature_vector.reshape(1, -1)
+        
+            feature_vector = np.asarray(feature_vector, dtype=np.float32)
+        
+            # Apply scaler if available
+            if self.scaler is not None:
+                feature_vector = self.scaler.transform(feature_vector)
+        
+            # Make prediction
+            proba = float(self.model.predict(feature_vector, verbose=0).flatten()[0])
+            apnea = proba >= settings.decision_threshold
+            label = "apnea" if apnea else "no_apnea"
+            confidence = proba if apnea else 1.0 - proba
+
+            return InferenceResult(label=label, confidence=confidence, apnea_probability=proba)
