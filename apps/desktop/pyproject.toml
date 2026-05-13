@@ -1,0 +1,14 @@
+[project]
+name = "sleep-apnea-desktop"
+version = "0.1.0"
+description = "Desktop client for Sleep Apnea backend"
+requires-python = ">=3.10"
+dependencies = [
+  "numpy>=1.26.0",
+  "requests>=2.32.0",
+  "sounddevice>=0.4.7",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -93,6 +93,13 @@ class ApneaInferencePipeline:
 
     def predict(self, audio: np.ndarray) -> InferenceResult:
         processed_audio = self.preprocess_audio(audio)
+        
+        # Check if audio is too quiet (likely silence/noise floor)
+        # Use max amplitude instead of RMS for better silence detection
+        max_amplitude = float(np.max(np.abs(processed_audio)))
+        if max_amplitude < 0.001:  # Only detect if nearly silent (< 0.1% of max value)
+            return InferenceResult(label="silence_detected", confidence=1.0, apnea_probability=-1.0)
+        
         feature_vector = self.extract_features(processed_audio).reshape(1, -1)
 
         if self.scaler is not None:
@@ -105,22 +112,27 @@ class ApneaInferencePipeline:
 
         return InferenceResult(label=label, confidence=confidence, apnea_probability=proba)
 
-        def predict_from_features(self, feature_vector: np.ndarray) -> InferenceResult:
-            """Predict from pre-extracted features (e.g., from .npy file)."""
-            # Ensure correct shape
-            if feature_vector.ndim == 1:
-                feature_vector = feature_vector.reshape(1, -1)
-        
-            feature_vector = np.asarray(feature_vector, dtype=np.float32)
-        
-            # Apply scaler if available
-            if self.scaler is not None:
-                feature_vector = self.scaler.transform(feature_vector)
-        
-            # Make prediction
-            proba = float(self.model.predict(feature_vector, verbose=0).flatten()[0])
-            apnea = proba >= settings.decision_threshold
-            label = "apnea" if apnea else "no_apnea"
-            confidence = proba if apnea else 1.0 - proba
+    def predict_from_features(self, feature_vector: np.ndarray) -> InferenceResult:
+        """Predict from pre-extracted features (e.g., from .npy file)."""
+        if feature_vector.ndim == 1:
+            feature_vector = feature_vector.reshape(1, -1)
 
-            return InferenceResult(label=label, confidence=confidence, apnea_probability=proba)
+        feature_vector = np.asarray(feature_vector, dtype=np.float32)
+
+        expected_features = int(getattr(self.scaler, "n_features_in_", feature_vector.shape[1]))
+        got_features = int(feature_vector.shape[1])
+        if got_features != expected_features:
+            raise ValueError(
+                f"Expected {expected_features} features per sample, got {got_features}. "
+                "This endpoint accepts extracted feature vectors, not label/type arrays."
+            )
+
+        if self.scaler is not None:
+            feature_vector = self.scaler.transform(feature_vector)
+
+        proba = float(self.model.predict(feature_vector, verbose=0).flatten()[0])
+        apnea = proba >= settings.decision_threshold
+        label = "apnea" if apnea else "no_apnea"
+        confidence = proba if apnea else 1.0 - proba
+
+        return InferenceResult(label=label, confidence=confidence, apnea_probability=proba)
