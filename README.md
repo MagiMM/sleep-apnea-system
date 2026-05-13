@@ -17,30 +17,53 @@ Monorepo for the sleep apnea detection application with real-time microphone rec
 - **macOS/Windows/Linux** (tested on macOS)
 - Microphone for audio recording
 
-## Quick Start
+## Quick Start (From Scratch)
 
-### 1. Setup Backend (Terminal 1)
+### 1. Clone repository
+
+```bash
+git clone <REPO_URL>
+cd sleep-apnea-system
+```
+
+### 2. Install dependencies (where to run `uv sync`)
+
+Run `uv sync` in each application folder:
 
 ```bash
 cd apps/backend
 uv sync
+
+cd ../desktop
+uv sync
+```
+
+### 3. Start backend (Terminal 1)
+
+From repository root:
+
+```bash
+cd apps/backend
 uv run uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
-The API will be available at `http://127.0.0.1:8000`. Verify with:
+API will be available at `http://127.0.0.1:8000`.
+Health check:
+
 ```bash
 curl http://127.0.0.1:8000/health
 ```
 
-### 2. Setup Desktop (Terminal 2)
+### 4. Start desktop app (Terminal 2)
+
+From repository root:
 
 ```bash
 cd apps/desktop
-uv sync
-python3 app.py
+uv run python app.py
 ```
 
-The GUI will open. Enter backend URL (default: `http://127.0.0.1:8000`) and click **Health** to verify connection.
+The GUI will open. Leave backend URL as `http://127.0.0.1:8000` (default) and click **Health**.
 
 ## Features
 
