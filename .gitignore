@@ -11,6 +11,7 @@ uv.lock
 
 # OS
 .DS_Store
+.vscode
 
 # Build artifacts
 build/
