@@ -45,6 +45,8 @@ From repository root:
 ```bash
 cd apps/backend
 uv run uvicorn backend.main:app --host 127.0.0.1 --port 8000
+or
+uv run --active uvicorn backend.main:app --host 127.0.0.1 --port 8000
 ```
 
 API will be available at `http://127.0.0.1:8000`.
@@ -72,6 +74,9 @@ The GUI will open. Leave backend URL as `http://127.0.0.1:8000` (default) and cl
 - **POST /predict-window** - Predict from audio file (multipart/form-data)
 - **POST /predict-features** - Predict from pre-extracted features (160D numpy array)
 - **POST /predict-signal-npy** - Predict from raw audio samples (numpy array)
+
+Swagger http://127.0.0.1:8000/docs
+
 
 ### Desktop Application
 - Real-time microphone recording with automatic **10-second windowing**
